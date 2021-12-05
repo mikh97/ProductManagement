@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="503.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <AnchorPane prefHeight="565.0" prefWidth="503.0">
+            <children>
+                <Label layoutX="140.0" layoutY="28.0" text="Customer Registration Form">
+                    <font>
+                        <Font name="System Bold Italic" size="17.0" />
+                    </font>
+                </Label>
+                <Label layoutX="53.0" layoutY="88.0" text="First Name:" />
+                <Label layoutX="53.0" layoutY="119.0" text="Last Name:" />
+                <Label layoutX="53.0" layoutY="152.0" text="Phone Number:" />
+                <Label layoutX="53.0" layoutY="184.0" text="Address:" />
+                <Label layoutX="53.0" layoutY="217.0" text="City:" />
+                <Label layoutX="53.0" layoutY="247.0" prefHeight="17.0" prefWidth="31.0" text="State:" />
+                <Label layoutX="51.0" layoutY="279.0" prefHeight="17.0" prefWidth="66.0" text="Postal Code:" />
+                <Label layoutX="51.0" layoutY="314.0" prefHeight="17.0" prefWidth="66.0" text="Username:" />
+                <Label layoutX="51.0" layoutY="350.0" prefHeight="17.0" prefWidth="66.0" text="Password:" />
+                <Label layoutX="139.0" layoutY="457.0" text="Already a customer?">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Label>
+                <Button fx:id="button_signup" layoutX="197.0" layoutY="398.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Sign Up" />
+                <Button fx:id="button_login" layoutX="262.0" layoutY="454.0" mnemonicParsing="false" text="Log in!" />
+                <TextField fx:id="tf_firstname" layoutX="123.0" layoutY="84.0" prefHeight="25.0" prefWidth="320.0" promptText="Enter your First Name" />
+                <TextField fx:id="tf_lastname" layoutX="123.0" layoutY="115.0" prefHeight="25.0" prefWidth="320.0" promptText="Enter your Last Name" />
+                <TextField fx:id="tf_phoneNumber" layoutX="148.0" layoutY="148.0" prefHeight="25.0" prefWidth="294.0" promptText="Example format: 888-888-8888" />
+                <TextField fx:id="tf_address" layoutX="113.0" layoutY="180.0" prefHeight="25.0" prefWidth="329.0" promptText="Enter your address" />
+                <TextField fx:id="tf_city" layoutX="114.0" layoutY="213.0" prefHeight="25.0" prefWidth="329.0" promptText="Enter your City" />
+                <TextField fx:id="tf_state" layoutX="113.0" layoutY="244.0" prefHeight="25.0" prefWidth="329.0" promptText="Enter the State you're in" />
+                <TextField fx:id="tf_postal" layoutX="123.0" layoutY="275.0" prefHeight="25.0" prefWidth="320.0" promptText="Enter Postal Code" />
+                <TextField fx:id="tf_username" layoutX="117.0" layoutY="310.0" prefHeight="25.0" prefWidth="329.0" promptText="Enter username (make sure it's unique)" />
+                <TextField fx:id="tf_password" layoutX="119.0" layoutY="346.0" prefHeight="25.0" prefWidth="329.0" promptText="Enter your password" />
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

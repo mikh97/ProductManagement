@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cs157afall21.productmanagement.LoginController">
+    <children>
+        <Label fx:id="label_logged" layoutX="72.0" layoutY="100.0" text="You have successfully Logged In! Unfortunately we are not fully functional yet :(">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="label_welcome" layoutX="124.0" layoutY="61.0" text="Welcome to Product Management Application!">
+            <font>
+                <Font name="System Bold Italic" size="16.0" />
+            </font>
+        </Label>
+        <Button fx:id="button_logout" layoutX="231.0" layoutY="175.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="137.0" text="Logout" />
+    </children>
+</AnchorPane>

@@ -1,0 +1,176 @@
+Product Management Project for CS157A Fall 2021:
+
+2 different types of users:
+- Customer:
+a.) able to create an account
+b.) delete an account
+c.) view all the products
+d.) order a product
+e.) cancel an order
+f.) check order status
+g.) able to log out
+h.) able to log in
+i.) able to view their card information
+j.) able to add their card information
+
+- Administrator:
+a.) able to add a product
+b.) delete a product
+c.) view all the products
+d.) set the availability of the product 
+e.) cancel a customer order
+f.) able to log in and log out but it is already count as a use case in customer 
+g.) able to view all the employees
+h.) able to view employee's office based on their ID
+
+
+All data is saved in MySQL database. 
+
+Goal 1:
+Create a small scale database and try a simple java program that takes user request to see if the connection to the database through JDBC works.
+
+Goal 2:
+Create the project and all of the items required.
+
+Requirements of this project:
+- Support 15 distinct functions to the users. (users means customer and admin of the app)
+- Database involved at least 5 relations and 15 total attributes. 
+- Relations should be in BCNF or 3NF
+- Your system should be able to handle at least 5 different queries involving different relations and attributes. (Make sure to have at least one co-related subquery, group by and having, aggregation, outer join, and set operation. At least 3 of them must involve several relations simultaneously)
+- All schema should come with key constraint
+- Reference integrity constraints are imposed on all possible cases to avoid dangling pointers.
+- Define at least two triggers in the database.
+- In large database systems, it is very common that their data grows over time and an archive function, which copies older entries into an archive database, will be useful. You will follow a simple approach to implement this function. Decide a relation that will be archived. Let's say the table name is t. Supply one additional column called updatedAt to the relation t from which you want to archive. This column's value will be set to the current timestamp whenever a tuple is inserted and modified in the relation t. Create another relation called Archive, which will store archived data. And write a stored procedure that takes a cutoff date as a parameter and copies tuples from t that haven't been modified since the cutoff date into the table Archive and deletes those archived tuples from t.
+
+
+
+-- For 15 functional requirements and associated SQL statements
+
+-- Customer:
+
+1.) Create an Account = INSERT INTO Customer (firstName, lastName, phoneNumber, address, city, state, postalCode, username, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+2.) Delete an Account = DELETE FROM Customer WHERE Customer.customerID = ?;
+3.) View Products = SELECT * FROM Products;
+4.) Order a Product =
+```
+INSERT INTO OrderDetails (productCode, quantityOrdered, totalPrice) VALUES (Products.productCode, ?, ?);
+// TotalPrice = Products.productPrice * OrderDetails.quantityOrdered;
+INSERT INTO Orders (orderID, customerID) VALUES (OrderDetails.orderID, Customer.customerID);
+```
+5.) Cancel an Order =
+```
+DELETE FROM Orders WHERE Orders.customerID = Customer.customerID; DELETE FROM OrderDetails WHERE OrderDetails.orderID = Orders.orderID; ```
+6.) Check Order Status = SELECT status FROM Orders WHERE Orders.customerID=Customer.customerID;
+7.) Log Out =
+```
+button_logout.setOnAction(new EventHandler<ActionEvent>() {
+@Override
+public void handle(ActionEvent event) {
+DBUtils.changeScene(event, "main.fxml", "Logged in!", null); }
+});
+```
+ 8.) Log In =
+```
+preparedStatement = connection.prepareStatement("SELECT password FROM Customer WHERE username = ?");
+preparedStatement.setString(1, username);
+resultSet = preparedStatement.executeQuery();
+if (!resultSet.isBeforeFirst()) {
+System.out.println("User not found in the Database!"); Alert alert = new Alert(Alert.AlertType.ERROR); alert.setContentText("Incorrect username or password!"); alert.show();
+} else {
+while (resultSet.next()) {
+String retrievedPassword = resultSet.getString("password");
+// Check for the right password
+if (retrievedPassword.equals(password)) {
+changeScene(event, "log-in.fxml", "Welcome!", null); } else {
+System.out.println("Password is incorrect!"); Alert alert = new Alert(Alert.AlertType.ERROR); alert.setContentText("Password is incorrect!"); alert.show();
+} }
+9.) View Card Information = SELECT * FROM PaymentInformation WHERE Customer.customerID = Payment.customerID;
+10.) Add Card Information = INSERT INTO PaymentInformation (customerID, bankName, cardNumber, cardType, cvv) VALUES (Customer.customerID, ?, ?, ?, ?);
+-- Administrator
+1.) Add Product = INSERT INTO Products (productCode, productName, productBrand, productDescription, productPrice, availability) VALUES (?, ?, ?, ?, ?, ?);
+2.) Delete Product = DELETE FROM Products WHERE productCode = ?;
+3.) View Products = SELECT * FROM Products;
+4.) Set Product Stock = UPDATE Products SET availability = ? WHERE productCode = ?;
+5.) Cancel an Order for Customer = DELETE FROM Orders WHERE Orders.customerID = ?;
+6.) Log In =
+```
+preparedStatement = connection.prepareStatement("SELECT password FROM Customer WHERE username = ?");
+preparedStatement.setString(1, username); resultSet = preparedStatement.executeQuery();
+```
+
+ if (!resultSet.isBeforeFirst()) {
+System.out.println("User not found in the Database!"); Alert alert = new Alert(Alert.AlertType.ERROR); alert.setContentText("Incorrect username or password!"); alert.show();
+} else {
+while (resultSet.next()) {
+String retrievedPassword = resultSet.getString("password");
+// Check for the right password
+if (retrievedPassword.equals(password)) {
+changeScene(event, "log-in.fxml", "Welcome!", null); } else {
+System.out.println("Password is incorrect!"); Alert alert = new Alert(Alert.AlertType.ERROR); alert.setContentText("Password is incorrect!"); alert.show();
+} }
+7.) Log Out =
+```
+button_logout.setOnAction(new EventHandler<ActionEvent>() {
+@Override
+public void handle(ActionEvent event) {
+DBUtils.changeScene(event, "main.fxml", "Logged in!", null); }
+});
+```
+8.) View All Employees = SELECT * FROM Employees;
+9.) View Employee Office = SELECT * FROM Offices WHERE Offices.officeID = Employees.officeID AND Employees.employeeID = ?;
+10.) Set status of Customer Order =
+```
+UPDATE Orders
+SET status = “?”
+WHERE customerID = ?;
+```
+Activity 3: Stored Procedures:
+```
+DROP PROCEDURE IF EXISTS OrdersArchiveProcedure;
+DELIMITER //
+CREATE PROCEDURE OrdersArchiveProcedure(IN date DATE)
+```
+
+ BEGIN
+INSERT INTO OrdersArchive SELECT * FROM Orders WHERE date <= cutOff; DELETE FROM Orders WHERE date <= cutOff;
+END//
+DELIMITER;
+```
+Activity 4: Two Triggers:
+```
+DROP TRIGGER IF EXISTS PriceUpdateTrigger;
+delimiter //
+CREATE TRIGGER PriceUpdateTrigger
+BEFORE UPDATE ON OrderDetails
+FOR EACH ROW
+BEGIN
+IF NEW.quantityOrdered <> OLD.quantityOrdered THEN
+SET NEW.totalPrice = OLD.totalPrice +
+(NEW.quantityOrdered - OLD.quantityOrdered) * (SELECT productPrice FROM Products WHERE productCode = NEW.productCode); END IF;
+END//
+delimiter ;
+```
+DROP TRIGGER IF EXISTS AvailabilityUpdateTrigger;
+delimiter //
+CREATE TRIGGER AvailabilityUpdateTrigger
+AFTER UPDATE ON OrderDetails
+FOR EACH ROW
+BEGIN
+IF NEW.quantityOrdered <> OLD.quantityOrdered THEN
+UPDATE Products SET availability = (availability - NEW.quantityOrdered + OLD.quantityOrdered)
+WHERE productCode = NEW.productCode;
+END IF;
+END//
+delimiter;
+```
+DROP TRIGGER IF EXISTS AvailabilityInsertTrigger;
+delimiter //
+CREATE TRIGGER AvailabilityInsertTrigger
+
+AFTER INSERT ON OrderDetails
+FOR EACH ROW
+BEGIN
+UPDATE Products SET availability = (availability - NEW.quantityOrdered)
+WHERE productCode = NEW.productCode; END//
+delimiter;
+```
